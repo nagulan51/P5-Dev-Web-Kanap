@@ -156,12 +156,14 @@ function handle_form(event) {
   const address = document.getElementById("address");
   const city = document.getElementById("city");
   const email = document.getElementById("email");
+  const cart = JSON.parse(localStorage.getItem("cart"));
   if (
     firstName.value &&
     lastName.value &&
     address.value &&
     city.value &&
-    email.value
+    email.value &&
+    cart.length != 0
   ) {
     event.preventDefault();
     localStorage.setItem("cart", JSON.stringify([]));
@@ -170,6 +172,10 @@ function handle_form(event) {
       JSON.stringify({ order_id: "Kanap_" + generateRandomNumber() })
     );
     window.location.replace("confirmation.html");
+  }
+  if (cart.length === 0) {
+    event.preventDefault();
+    alert("votre panier est vide");
   }
 
   console.log(event);
