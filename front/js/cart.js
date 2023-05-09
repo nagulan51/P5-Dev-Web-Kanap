@@ -157,6 +157,8 @@ function handle_form(event) {
   const city = document.getElementById("city");
   const email = document.getElementById("email");
   const cart = JSON.parse(localStorage.getItem("cart"));
+  var emailregex =
+    /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
   if (
     firstName.value &&
     lastName.value &&
@@ -165,13 +167,18 @@ function handle_form(event) {
     email.value &&
     cart.length != 0
   ) {
-    event.preventDefault();
-    localStorage.setItem("cart", JSON.stringify([]));
-    localStorage.setItem(
-      "order_id",
-      JSON.stringify({ order_id: "Kanap_" + generateRandomNumber() })
-    );
-    window.location.replace("confirmation.html");
+    if (
+      typeof firstName.value === "string" &&
+      typeof lastName.value === "string" &&
+      typeof address.value === "string" &&
+      typeof city.value === "string" &&
+      email.value.match(emailregex)
+    ) {
+      event.preventDefault();
+      window.location.replace(
+        `confirmation.html?firstName=${firstName.value}&lastName=${lastName.value}&address=${address.value}&city=${city.value}&email=${email.value}`
+      );
+    }
   }
   if (cart.length === 0) {
     event.preventDefault();

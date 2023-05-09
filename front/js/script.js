@@ -23,12 +23,7 @@ async function load_products() {
   const data = await fetch(api);
   const finaldata = await data.json();
 
-  //use for random
-
-  // for (x = 0; x < count; x++) {
   for (x = 0; x < finaldata.length; x++) {
-    // use for random
-    // var single_article = finaldata[Math.floor(Math.random() * finaldata.length)];
     var single_article = finaldata[x];
     console.log(single_article);
     console.log(single_article._id);
