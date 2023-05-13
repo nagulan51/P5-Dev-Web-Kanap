@@ -14,16 +14,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
     Load_product(data);
   });
 });
-
+// fonction qui permet de recuperer un article avec un id
 async function getSingleProduct(id) {
   var api = `http://localhost:3000/api/products/${id}`;
   const data = await fetch(api);
   const finaldata = await data.json();
   return finaldata ? finaldata : undefined;
 }
-// charger le produit
+// fonction qui permet afficher le produit chargé !
 function Load_product(data) {
-  //   console.log(data);
   const item__img = document.querySelector(".item__img");
   const title = document.getElementById("title");
   const price = document.getElementById("price");
@@ -48,7 +47,7 @@ function Load_product(data) {
   price.innerHTML = data.price;
   description.innerHTML = data.description;
 }
-// gerer le ajout dans le panier
+// fonction qui permet de  gerer le ajout dans le panier
 function handle_add_to_cart(id) {
   const color_options = document.getElementById("colors");
   const itemQuantity = document.getElementsByName("itemQuantity")[0].value;
@@ -61,9 +60,7 @@ function handle_add_to_cart(id) {
     } else if (itemQuantity <= 0) {
       alert("merci de bien vouloir choisir la quantité");
     }
-  } else if (!color_options.selectedIndex <= 0 && !itemQuantity <= 0) {
-    console.log(localStorage.getItem("cart"));
-    console.log("cart");
+  } else if (color_options.selectedIndex > 0 && itemQuantity > 0) {
     var cart_item = [
       {
         id: id,
@@ -78,20 +75,20 @@ function handle_add_to_cart(id) {
       );
       // si objet existe déja dans le panier alors in incrémente
       if (resultFind1) {
-        resultFind1.quantity++;
+        resultFind1.quantity =
+          parseInt(resultFind1.quantity) + parseInt(itemQuantity);
         localStorage.setItem("cart", JSON.stringify(cart));
         alert("produit rajouté dans le panier !");
       } else {
         cart.push({
           id: id,
-          quantity: 1,
+          quantity: itemQuantity,
           colors: color_options.value,
         });
         alert("produit rajouté dans le panier !");
         localStorage.setItem("cart", JSON.stringify(cart));
       }
     } else {
-      console.log("vous avez rien dans le panier");
       localStorage.setItem("cart", JSON.stringify(cart_item));
     }
   }

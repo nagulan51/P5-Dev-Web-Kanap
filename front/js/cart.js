@@ -1,13 +1,6 @@
 document.addEventListener("DOMContentLoaded", (event) => {
   if (localStorage.getItem("cart")) {
     const cart = JSON.parse(localStorage.getItem("cart"));
-    if (cart.length === 0 || cart === undefined) {
-      const cart__items = document.getElementById("cart__items");
-      let itemContentDescriptionHeader = document.createElement("h2");
-      itemContentDescriptionHeader.style.textAlign = "center";
-      itemContentDescriptionHeader.innerText = "votre panier est vide :-)";
-      cart__items.appendChild(itemContentDescriptionHeader);
-    }
     cart.forEach((data) => {
       create_product(data);
     });
@@ -87,8 +80,6 @@ function create_product(data) {
     itemContent.appendChild(itemContentSettings);
 
     itemElement.appendChild(itemContent);
-
-    // append itemElement to cart
     cart__items.appendChild(itemElement);
   });
 }
@@ -105,15 +96,31 @@ function Calcul_montant_total_articles_total(calcul_prix) {
   const totalQuantity = document.getElementById("totalQuantity");
   var total_amount = 0;
   var total_articles = 0;
-  calcul_prix.forEach((data) => {
-    getProductByid(data.id).then((single_product) => {
-      total_amount = total_amount + single_product.price * data.quantity;
-      total_articles = parseInt(total_articles) + parseInt(data.quantity);
+  if (calcul_prix && calcul_prix.length != 0) {
+    calcul_prix.forEach((data) => {
+      getProductByid(data.id).then((single_product) => {
+        total_amount = total_amount + single_product.price * data.quantity;
+        total_articles = parseInt(total_articles) + parseInt(data.quantity);
 
-      price.innerHTML = total_amount;
-      totalQuantity.innerHTML = total_articles;
+        price.innerHTML = total_amount;
+        totalQuantity.innerHTML = total_articles;
+      });
     });
-  });
+  } else if (
+    calcul_prix === undefined ||
+    calcul_prix.length === 0 ||
+    calcul_prix === []
+  ) {
+    let itemContentDescriptionHeader = document.createElement("h2");
+    itemContentDescriptionHeader.innerText = "votre panier est vide :-)";
+    itemContentDescriptionHeader.style.textAlign = "center";
+    const cart__items = document.getElementById("cart__items");
+    cart__items.appendChild(itemContentDescriptionHeader);
+    price.innerHTML = 0;
+    totalQuantity.innerHTML = 0;
+  }
+  {
+  }
 }
 function handle_update_cart(element) {
   const quantity = element.target.value;
@@ -184,8 +191,6 @@ function handle_form(event) {
     event.preventDefault();
     alert("votre panier est vide");
   }
-
-  console.log(event);
 }
 
 function generateRandomNumber() {

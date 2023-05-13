@@ -40,7 +40,6 @@ async function create_order(
   email,
   prodcuts
 ) {
-  console.log(prodcuts);
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
@@ -60,13 +59,7 @@ async function create_order(
   })
     .then((response) => response.json())
     .then((response) => {
-      // console.log(JSON.stringify(response));
       localStorage.setItem("cart", JSON.stringify([]));
-      console.log(response.orderId);
       orderId.innerHTML = response.orderId;
-      // localStorage.setItem(
-      //   "order_id",
-      //   JSON.stringify({ order_id: "Kanap_" + generateRandomNumber() })
-      // );
     });
 }

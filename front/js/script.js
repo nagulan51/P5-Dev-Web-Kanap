@@ -25,8 +25,6 @@ async function load_products() {
 
   for (x = 0; x < finaldata.length; x++) {
     var single_article = finaldata[x];
-    console.log(single_article);
-    console.log(single_article._id);
     let a = document.createElement("a");
     a.setAttribute("href", `./product.html?id=${single_article._id}`);
     let article = document.createElement("article");
@@ -41,8 +39,7 @@ async function load_products() {
 
     let p = document.createElement("p");
     p.className = "productDescription";
-    p.innerText =
-      "Dis enim malesuada risus sapien gravida nulla nisl arcu. Dis enim malesuada risus sapien gravida nulla nisl arcu.";
+    p.innerText = single_article.description;
 
     a.appendChild(article);
     article.appendChild(img);
