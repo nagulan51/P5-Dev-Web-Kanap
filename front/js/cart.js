@@ -131,9 +131,17 @@ function handle_update_cart(element) {
     );
     // si objet existe déja dans le panier alors in incrémente
     if (resultFind1) {
-      resultFind1.quantity = quantity;
-      Calcul_montant_total_articles_total(cart);
-      localStorage.setItem("cart", JSON.stringify(cart));
+      if(quantity > 100 )
+      {
+        alert("vous ne pouvez pas commander plus de 100 articles");
+        return;
+      }
+      else
+      {
+        resultFind1.quantity = quantity;
+        Calcul_montant_total_articles_total(cart);
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
     }
   } else {
     alert("woops une erreur imprévu s'est produite");
@@ -164,6 +172,9 @@ function handle_form(event) {
   const cart = JSON.parse(localStorage.getItem("cart"));
   var emailregex =
     /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+  var nameregex = /^[A-Za-z]{3,25}$/;
+  var villeregex = /^[A-Za-z\s-]{2,}$/;
+  var addressregex = /^\d+\s[A-Za-z\s\d-]{2,}$/
   if (
     firstName.value &&
     lastName.value &&
@@ -173,10 +184,10 @@ function handle_form(event) {
     cart.length != 0
   ) {
     if (
-      typeof firstName.value === "string" &&
-      typeof lastName.value === "string" &&
-      typeof address.value === "string" &&
-      typeof city.value === "string" &&
+      firstName.value.match(nameregex) &&
+      lastName.value.match(nameregex) &&
+      address.value.match(addressregex) &&
+      city.value.match(villeregex) &&
       email.value.match(emailregex)
     ) {
       event.preventDefault();
@@ -195,6 +206,11 @@ function handle_form(event) {
         localStorage.setItem("order_id", JSON.stringify(data));
         window.location.href = "confirmation.html";
       });
+    }
+    else
+    {
+      event.preventDefault();
+      alert("veuillez remplir correctement le formulaire"); 
     }
   }
   if (cart.length === 0) {
