@@ -8,6 +8,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
   add_to_cart_btn.addEventListener("click", () => {
     handle_add_to_cart(id);
   });
+  const quantity = document.getElementsByName("itemQuantity")[0];
+  quantity.addEventListener("change", () => {
+    var alert_error = document.createElement("p");
+    alert_error.innerText = "Veuillez choisir une quantité inférieure à 100";
+    alert_error.style.color = "#DC143C";
+    var item__content__settings__quantity = document.querySelector(
+      ".item__content__settings__quantity"
+    );
+    if (quantity.value > 100) {
+      alert("merci de bien vouloir choisir la quantité");
+      quantity.value = 100;
+      item__content__settings__quantity.appendChild(alert_error);
+      setTimeout(() => {
+        item__content__settings__quantity.removeChild(alert_error);
+      }, 5000);
+    }
+  });
 
   //  Load product at startup
   getSingleProduct(id).then((data) => {
@@ -59,8 +76,14 @@ function handle_add_to_cart(id) {
       alert("merci de bien vouloir choisir une couleur");
     } else if (itemQuantity <= 0) {
       alert("merci de bien vouloir choisir la quantité");
+    } else if (itemQuantity > 100) {
+      alert("merci de bien vouloir choisir la quantité");
     }
-  } else if (color_options.selectedIndex > 0 && itemQuantity > 0) {
+  } else if (
+    color_options.selectedIndex > 0 &&
+    itemQuantity > 0 &&
+    itemQuantity <= 100
+  ) {
     var cart_item = [
       {
         id: id,
@@ -75,10 +98,19 @@ function handle_add_to_cart(id) {
       );
       // si objet existe déja dans le panier alors in incrémente
       if (resultFind1) {
-        resultFind1.quantity =
-          parseInt(resultFind1.quantity) + parseInt(itemQuantity);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        alert("produit rajouté dans le panier !");
+        if (parseInt(resultFind1.quantity) + parseInt(itemQuantity) > 100) {
+          console.log(parseInt(resultFind1.quantity) + parseInt(itemQuantity));
+          alert(
+            "merci de bien choisir une quantité inférieure à 100, vous avez déjà Article de ce type " +
+              resultFind1.quantity +
+              " dans votre panier"
+          );
+        } else {
+          resultFind1.quantity =
+            parseInt(resultFind1.quantity) + parseInt(itemQuantity);
+          localStorage.setItem("cart", JSON.stringify(cart));
+          alert("produit rajouté dans le panier !");
+        }
       } else {
         cart.push({
           id: id,

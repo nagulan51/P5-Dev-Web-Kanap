@@ -119,8 +119,6 @@ function Calcul_montant_total_articles_total(calcul_prix) {
     price.innerHTML = 0;
     totalQuantity.innerHTML = 0;
   }
-  {
-  }
 }
 function handle_update_cart(element) {
   const quantity = element.target.value;
@@ -182,9 +180,21 @@ function handle_form(event) {
       email.value.match(emailregex)
     ) {
       event.preventDefault();
-      window.location.replace(
-        `confirmation.html?firstName=${firstName.value}&lastName=${lastName.value}&address=${address.value}&city=${city.value}&email=${email.value}`
-      );
+      let prodcuts = [];
+      cart.forEach((product) => {
+        prodcuts.push(product.id);
+      });
+      create_order(
+        firstName.value,
+        lastName.value,
+        address.value,
+        city.value,
+        email.value,
+        prodcuts
+      ).then((data) => {
+        localStorage.setItem("order_id", JSON.stringify(data));
+        window.location.href = "confirmation.html";
+      });
     }
   }
   if (cart.length === 0) {
@@ -192,11 +202,39 @@ function handle_form(event) {
     alert("votre panier est vide");
   }
 }
+async function create_order(
+  firstName,
+  lastName,
+  address,
+  city,
+  email,
+  products
+) {
+  try {
+    const response = await fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contact: {
+          firstName: firstName,
+          lastName: lastName,
+          address: address,
+          city: city,
+          email: email,
+        },
+        products: products,
+      }),
+    });
 
-function generateRandomNumber() {
-  let result = "";
-  for (let i = 0; i < 10; i++) {
-    result += Math.floor(Math.random() * 10);
+    const data = await response.json();
+
+    if (data.orderId) {
+      return data.orderId;
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
   }
-  return result;
 }
